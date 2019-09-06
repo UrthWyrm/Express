@@ -6,34 +6,44 @@
 // The client listens for an event called 'random_number' and when this event gets triggered, shows the number in the HTML.
 // The client listens for an event called 'updated_message' and when this event gets triggered, displays the message somewhere in the HTML
 
-var express = require("express");
-var app = express();
-var server = app.listen(8000);
-var io = require("socket.io")(server);
+//Config
+app.use(express.static(__dirname +"/static"));
 
-//Use
-app.use(express.static(__dirname + "/static"));
-
-//Set
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
-io.on("connection", function (socket) {
-    console.log("You Have Connected!")
-    socket.on("posting_form", function (data) {
-        var num = Math.floor(Math.random()*1000);
-        var object = JSON.stringify(data);
-        socket.emit("updated_message",  {
-            info: "The data sent is: ${object}."
-        });
-        socket.emit("random_number", {
-            message: "Your Number is: ${num}!"
-        });
+//Sockets
+io.on("connection", function(socket){
+ 
+    console.log("Connected and count initialized!");
+    socket.emit("new_count", {
+        newCount : `This button has been pushed ${counter} times(s)!`
     });
-});
+    socket.broadcast.emit("new_count", {
+        newCount : `This button has been pushed ${counter} times(s)!`
+    });
+    socket.on("epic_push", function(){
+        counter += 1;
+        socket.emit("new_count", {
+            newCount : `This button has been pushed ${counter} times(s)!`
+        });
+        socket.broadcast.emit("new_count", {
+            newCount : `This button has been pushed ${counter} times(s)!`
+        });
+    })
+    socket.on("reset_push", function(){
+        counter = 0;
+        socket.emit("reset_count", {
+            newCount : `This button has been pushed ${counter} times(s)!`
+        });
+        socket.broadcast.emit("reset_count", {
+            newCount : `This button has been pushed ${counter} times(s)!`
+        });
+    })
+})
 
-//Get
-app.get("/", function(req, res) {
-    console.log("Got it!");
+//Routes
+app.get("/", function(req, res){
+    console.log("~Root~");
     res.render("index");
 })
