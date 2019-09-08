@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Colors</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 18rem;">
+                <h2><div class="card-header text-center">Blue</div></h2>
+                <div class="card-body">
+                    <p class="text-center card-text">Click Me To See A World Of Blue!</p>
+                    <button id ="blue">Primary</button>
+                </div>
+            </div>
+            <div class="card text-white bg-danger mb-3 mx -auto" style="max-width: 18rem;">
+                    <h2><div class="card-header text-center">Red</div></h2>
+                    <div class="card-body">
+                        <p class="text-center card-text">Click Me To See A World Of Red!</p>
+                        <button id ="red">Primary</button>
+                    </div>
+                </div>
+                <div class="card text-white bg-success mb-3 mx-auto" style="max-width: 18rem;">
+                        <h2><div class="card-header text-center">Green</div></h2>
+                        <div class="card-body">
+                            <p class="text-center card-text">Click Me To See A World Of Green!</p>
+                            <button id ="green">Primary</button>
+                        </div>
+            </div>
+        </div>
+    </div>
+    <script type = "text/javascript">
+    var socket = io();
+    $("#green").click(function() {
+        socket.emit("green_push");
+    })
+    $("#blue").click(function() {
+        socket.emit("blue_push");
+    })
+    $("#red").click(function() {
+        socket.emit("red_push");
+    })
+    socket.on("launch", function(data) {
+        $("body").css("background-color", `${data.bgc}`);
+        console.log(data);
+        console.log(data.background);
+    })
+    socket.on("green_background", function() {
+        $("body").css("background-color", "green");
+    })
+    socket.on("blue_background", function() {
+        $("body").css("background-color", "blue");
+    })
+    socket.on("red_background", function() {
+        $("body").css("background-color", "red");
+    })
+    </script>
+</body>
+
+</html>
